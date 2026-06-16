@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)file:///C:/Users/user/Downloads/gemini-code-1781592398670.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🫧 말랑말랑 화학 방울 게임 🫧</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link href="./🫧 말랑말랑 화학 방울 게임 🫧_files/css2" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --panel-bg: #ffffff;
+            --text-color: #2c3e50;
+            --primary-color: #a8dadc;
+            --primary-dark: #457b9d;
+            --accent-color: #e63946;
+            --card-border: rgba(69, 123, 157, 0.15);
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a2e;
+            --panel-bg: #16213e;
+            --text-color: #e2e8f0;
+            --primary-color: #0f3460;
+            --primary-dark: #4ea8de;
+            --accent-color: #e94560;
+            --card-border: rgba(78, 168, 222, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Jua', sans-serif !important;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100dvh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
+            overflow: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--panel-bg);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .title-area h1 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+        }
+
+        .logo-area {
+            font-size: 1.3rem;
+            color: #ff4d6d;
+            background: linear-gradient(135deg, #fff0f3, #ffccd5);
+            padding: 6px 16px;
+            border-radius: 50px;
+            box-shadow: 0 4px 8px rgba(255, 77, 109, 0.15);
+            border: 2px dashed #ffb3c1;
+        }
+        .dark-mode .logo-area {
+            background: linear-gradient(135deg, #4c0519, #881337);
+            color: #ffe4e6;
+            border-color: #f43f5e;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            width: 100vw;
+            height: calc(100dvh - 60px);
+            position: relative;
+        }
+
+        #control-panel {
+            width: 32%;
+            min-width: 310px;
+            background-color: var(--panel-bg);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            border-right: 1px solid var(--card-border);
+            overflow-y: auto;
+            z-index: 5;
+        }
+
+        #game-panel {
+            width: 68%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at center, rgba(168, 218, 220, 0.15) 0%, transparent 80%);
+        }
+
+        .card {
+            background: rgba(168, 218, 220, 0.08);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+
+        .student-form {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr) 2fr;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        input, select, button {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            background-color: var(--panel-bg);
+            color: var(--text-color);
+            font-size: 1.05rem;
+            outline: none;
+        }
+        button {
+            background-color: var(--primary-dark);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .scoreboard {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: linear-gradient(135deg, #a8dadc, #457b9d);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1.15rem;
+        }
+        .dark-mode .scoreboard {
+            background: linear-gradient(135deg, #1d3557, #457b9d);
+        }
+        .scoreboard-row {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+
+        .rank-box {
+            max-height: 110px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.02);
+            padding: 6px;
+            border-radius: 8px;
+        }
+        .rank-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 10px;
+            font-size: 0.95rem;
+        }
+
+        .util-tray {
+            margin-top: auto;
+            display: flex;
+            gap: 8px;
+        }
+        .util-tray button {
+            flex: 1;
+            background-color: rgba(0,0,0,0.04);
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        #game-svg {
+            width: 100%;
+            height: 100%;
+            flex: 1;
+            background-color: rgba(168, 218, 220, 0.03);
+        }
+
+        #input-dock {
+            padding: 16px;
+            background-color: var(--panel-bg);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        #answer-input {
+            width: 100%;
+            max-width: 450px;
+            font-size: 1.4rem;
+            text-align: center;
+            border: 2px solid var(--primary-dark);
+        }
+
+        #toast-container {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .toast-node {
+            background-color: rgba(29, 53, 87, 0.92);
+            color: #ffffff;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .modal-mask {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: rgba(29, 53, 87, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 500;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-mask.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-window {
+            background-color: var(--panel-bg);
+            border-radius: 20px;
+            width: 85%;
+            max-width: 420px;
+            padding: 28px;
+            text-align: center;
+        }
+
+        /* 주아체 맞춤형 화학 첨자 위치 정밀 조정 */
+        .subscript-node { font-size: 18px; font-weight: bold; }
+        .superscript-node { font-size: 18px; font-weight: bold; }
+        .screen-guide-text { fill: var(--primary-dark); font-size: 24px; font-weight: bold; }
+
+        @media (max-width: 768px) {
+            main { flex-direction: column; height: auto; overflow-y: auto; }
+            #control-panel { width: 100%; min-width: 100%; }
+            #game-panel { width: 100%; height: 55dvh; min-height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="title-area">
+            <h1>🫧 말랑말랑 화학 방울 게임 🫧</h1>
+        </div>
+        <div class="logo-area">♥지민쌤과 두근두근 과학 학습♥</div>
+    </header>
+
+    <main>
+        <div id="control-panel">
+            <div class="card">
+                <h2>👤 학생 정보 입력</h2>
+                <div class="student-form">
+                    <input type="number" id="stu-grade" value="2" min="1" max="3">
+                    <input type="number" id="stu-class" value="1" min="1" max="15">
+                    <input type="number" id="stu-number" value="1" min="1" max="40">
+                    <input type="text" id="stu-name" value="홍길동" placeholder="이름">
+                </div>
+                <button id="start-engine-btn" onclick="initializeGameSession()" style="width: 100%; font-size: 1.15rem; background-color: var(--accent-color);">실험 시작 (3분 제한) 🚀</button>
+            </div>
+
+            <div class="card">
+                <h2>📊 실시간 대시보드</h2>
+                <div class="scoreboard" id="scoreboard">
+                    <div class="scoreboard-row">
+                        <span id="score-display">✨ 점수: 540</span>
+                        <span id="health-display">생명: 💔 💔 💔 💔 💔 </span>
+                    </div>
+                    <div class="scoreboard-row" style="margin-top: 4px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.25);">
+                        <span id="timer-display" style="color: #fff3b0; font-weight: bold;">⏱️ 남은 시간: 00:45</span>
+                    </div>
+                </div>
+                <h3 style="font-size: 1.1rem; margin: 12px 0 4px 0; color: var(--primary-dark);">🏆 실시간 Top 5 명예의 전당</h3>
+                <div class="rank-box">
+                    <div id="rank-insertion-point" style="color: #94a3b8; text-align:center; padding: 10px; font-size:0.9rem;"><div class="rank-item"><span>🥇 1등. 2학년 1반 1번 홍길동</span> <strong>540점</strong></div></div>
+                </div>
+            </div>
+
+            <div class="card control-group">
+                <h2>⚙️ 문제 범위 지정</h2>
+                <select id="mission-scope" style="width: 100%;">
+                    <option value="total">통합 단원 종합 패키지 (원소+분자+이온)</option>
+                    <option value="elements">핵심 원소 기호 (주기율표 1번 ~ 20번)</option>
+                    <option value="molecules">필수 주요 분자식 (9종)</option>
+                    <option value="ions">단원 핵심 이온 기호 (16종)</option>
+                </select>
+            </div>
+
+            <div class="util-tray">
+                <button id="mute-toggle-btn" onclick="toggleAudioSystem()">🔊 사운드 ON</button>
+                <button id="bgm-toggle-btn" onclick="toggleBackgroundAmbiance()">🎵 배경음 OFF</button>
+                <button onclick="toggleVisualTheme()">🌓 테마 전환</button>
+            </div>
+        </div>
+
+        <div id="game-panel">
+            <svg id="game-svg" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                <text x="400" y="400" text-anchor="middle" id="svg-background-notice" class="screen-guide-text" style="display: block;">실험이 종료되었습니다. 다시 시작하려면 버튼을 누르세요!</text>
+                <g id="fx-particles-group"></g>
+                <g id="bubble-entities-group"><g transform="translate(247.396482683393, 355.9920368423813)"><circle r="58" fill="hsla(155, 85%, 85%, 0.85)" stroke="hsl(155, 60%, 45%)" stroke-width="3.5"></circle><text text-anchor="middle" y="8" font-size="28px" font-weight="bold" fill="#1e293b"><tspan>N</tspan><tspan>H</tspan><tspan class="subscript-node" dy="10">3</tspan><tspan dy="-10"></tspan></text></g><g transform="translate(58, 111.26740371784538)"><circle r="58" fill="hsla(162, 85%, 85%, 0.85)" stroke="hsl(162, 60%, 45%)" stroke-width="3.5"></circle><text text-anchor="middle" y="8" font-size="28px" font-weight="bold" fill="#1e293b"><tspan>C</tspan><tspan>u</tspan><tspan class="superscript-node" dy="-12">2⁺</tspan><tspan dy="12"></tspan></text></g></g>
+            </svg>
+
+            <div id="input-dock">
+                <input type="text" id="answer-input" placeholder="정답(이름)을 입력하고 엔터를 누르세요!" onkeydown="if(event.key === &#39;Enter&#39;) evaluatingUserAnswer()" disabled="">
+                <button id="submit-btn" onclick="evaluatingUserAnswer()" style="padding: 0 20px;" disabled="">확인</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast-container"></div>
+
+    <div class="modal-mask" id="global-status-modal">
+        <div class="modal-window">
+            <h2 id="modal-header-title" style="font-size: 1.8rem; color: var(--accent-color); margin-bottom: 12px;">💥 하트 전멸! 실험 종료</h2>
+            <div id="modal-core-body" style="font-size: 1.15rem; margin-bottom: 18px; line-height: 1.6; color: var(--text-color);">🎉 <strong>홍길동</strong> 학생 고생했어요!<br><br>🏁 최종 기록: <strong>540점</strong><br>종합 순위가 갱신되었습니다.</div>
+            <button onclick="dismissStatusModal()" style="width: 100%; background-color: var(--primary-dark);">확인 완료</button>
+        </div>
+    </div>
+
+    <script>
+        const CHEMICAL_REGISTRY = {
+            elements: [
+                { symbol: "H", target: ["수소"] }, { symbol: "He", target: ["헬륨"] },
+                { symbol: "Li", target: ["리튬"] }, { symbol: "Be", target: ["베릴륨"] },
+                { symbol: "B", target: ["붕소"] }, { symbol: "C", target: ["탄소"] },
+                { symbol: "N", target: ["질소"] }, { symbol: "O", target: ["산소"] },
+                { symbol: "F", target: ["플루오린"] }, { symbol: "Ne", target: ["네온"] },
+                { symbol: "Na", target: ["나트륨"] }, { symbol: "Mg", target: ["마그네슘"] },
+                { symbol: "Al", target: ["알루미늄"] }, { symbol: "Si", target: ["규소"] },
+                { symbol: "P", target: ["인"] }, { symbol: "S", target: ["황"] },
+                { symbol: "Cl", target: ["염소"] }, { symbol: "Ar", target: ["아르곤"] },
+                { symbol: "K", target: ["칼륨"] }, { symbol: "Ca", target: ["칼슘"] }
+            ],
+            molecules: [
+                { symbol: "O_2", target: ["산소", "산소분자"] }, { symbol: "H_2", target: ["수소", "수소분자"] },
+                { symbol: "H_2O", target: ["물"] }, { symbol: "N_2", target: ["질소", "질소분자"] },
+                { symbol: "CO", target: ["일산화탄소"] }, { symbol: "CO_2", target: ["이산화탄소"] },
+                { symbol: "CH_4", target: ["메테인", "메탄"] }, { symbol: "NH_3", target: ["암모니아"] },
+                { symbol: "SO_2", target: ["이산화황"] }
+            ],
+            ions: [
+                { symbol: "OH^-", target: ["수산화이온"] }, { symbol: "CO_3^2-", target: ["탄산이온"] },
+                { symbol: "NO_3^-", target: ["질산이온"] }, { symbol: "Mg^2+", target: ["마그네슘이온"] },
+                { symbol: "Li^+", target: ["리튬이온"] }, { symbol: "H^+", target: ["수소이온"] },
+                { symbol: "Na^+", target: ["나트륨이온"] }, { symbol: "K^+", target: ["칼륨이온"] },
+                { symbol: "Ag^+", target: ["은이온"] }, { symbol: "Ca^2+", target: ["칼슘이온"] },
+                { symbol: "Fe^2+", target: ["철이온"] }, { symbol: "Cu^2+", target: ["구리이온"] },
+                { symbol: "F^-", target: ["플루오린화이온"] }, { symbol: "O^2-", target: ["산화이온"] },
+                { symbol: "Cl^-", target: ["염화이온"] }, { symbol: "I^-", target: ["아이오딘화이온"] }
+            ]
+        };
+
+        const canvasWidth = 800;
+        const canvasHeight = 800;
+
+        let engineActive = false;
+        let scoreState = 0;
+        let healthState = 5;
+        let activeBubbles = [];
+        let activeParticles = [];
+        let leaderboardMemory = [];
+        
+        let timeRemaining = 180; 
+        let timerIntervalId = null;
+        let currentSpeedMultiplier = 1.0; 
+
+        let lastGenerationTimestamp = 0;
+        let intervalConfig = 2200; 
+
+        let audioContextInstance = null;
+        let audioMuteState = false;
+        let bgmNode = null;
+        let bgmActive = false;
+
+        const bubbleContainerGroup = document.getElementById('bubble-entities-group');
+        const particleContainerGroup = document.getElementById('fx-particles-group');
+
+        function triggerAudioSynthesizer(eventTone) {
+            if (audioMuteState) return;
+            try {
+                if (!audioContextInstance) {
+                    audioContextInstance = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioContextInstance && audioContextInstance.state === 'suspended') {
+                    audioContextInstance.resume();
+                }
+                
+                const ctx = audioContextInstance;
+                const osc = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                const timeline = ctx.currentTime;
+
+                if (eventTone === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, timeline);
+                    gainNode.gain.setValueAtTime(0.1, timeline);
+                    gainNode.gain.linearRampToValueAtTime(0, timeline + 0.05);
+                    osc.start(); osc.stop(timeline + 0.05);
+                } else if (eventTone === 'pop') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, timeline);
+                    osc.frequency.exponentialRampToValueAtTime(783.99, timeline + 0.12);
+                    gainNode.gain.setValueAtTime(0.15, timeline);
+                    gainNode.gain.linearRampToValueAtTime(0, timeline + 0.12);
+                    osc.start(); osc.stop(timeline + 0.12);
+                } else if (eventTone === 'damage') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, timeline);
+                    osc.frequency.linearRampToValueAtTime(110, timeline + 0.25);
+                    gainNode.gain.setValueAtTime(0.15, timeline);
+                    gainNode.gain.linearRampToValueAtTime(0, timeline + 0.25);
+                    osc.start(); osc.stop(timeline + 0.25);
+                } else if (eventTone === 'fanfare') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                        const subOsc = ctx.createOscillator();
+                        const subGain = ctx.createGain();
+                        subOsc.connect(subGain); subGain.connect(ctx.destination);
+                        subOsc.frequency.setValueAtTime(freq, timeline + idx * 0.08);
+                        subGain.gain.setValueAtTime(0.1, timeline + idx * 0.08);
+                        subGain.gain.linearRampToValueAtTime(0, timeline + idx * 0.08 + 0.15);
+                        subOsc.start(timeline + idx * 0.08); subOsc.stop(timeline + idx * 0.08 + 0.15);
+                    });
+                }
+            } catch(e) {
+                console.log("Audio 정책 안내 우회");
+            }
+        }
+
+        function toggleBackgroundAmbiance() {
+            if (bgmActive) {
+                if (bgmNode) { try { bgmNode.stop(); } catch(e){} bgmNode = null; }
+                bgmActive = false;
+                document.getElementById('bgm-toggle-btn').innerText = "🎵 배경음 OFF";
+            } else {
+                if (audioMuteState) return;
+                try {
+                    if (!audioContextInstance) audioContextInstance = new (window.AudioContext || window.webkitAudioContext)();
+                    if (audioContextInstance.state === 'suspended') audioContextInstance.resume();
+                    
+                    const ctx = audioContextInstance;
+                    bgmNode = ctx.createOscillator();
+                    const filter = ctx.createBiquadFilter();
+                    const gain = ctx.createGain();
+                    
+                    bgmNode.type = 'sine';
+                    bgmNode.frequency.setValueAtTime(140, ctx.currentTime);
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(200, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.04, ctx.currentTime);
+                    
+                    bgmNode.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(ctx.destination);
+                    bgmNode.start();
+                    bgmActive = true;
+                    document.getElementById('bgm-toggle-btn').innerText = "🎵 배경음 ON";
+                } catch(e) {
+                    console.log("BGM 재생 대기");
+                }
+            }
+        }
+
+        function toggleAudioSystem() {
+            audioMuteState = !audioMuteState;
+            document.getElementById('mute-toggle-btn').innerText = audioMuteState ? "🔇 사운드 OFF" : "🔊 사운드 ON";
+            if (audioMuteState && bgmActive) toggleBackgroundAmbiance();
+        }
+
+        function toggleVisualTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function pushNotificationToast(message) {
+            const container = document.getElementById('toast-container');
+            const node = document.createElement('div');
+            node.className = 'toast-node';
+            node.innerText = message;
+            container.appendChild(node);
+            setTimeout(() => node.remove(), 2000);
+        }
+
+        function startTimerSystem() {
+            if(timerIntervalId) clearInterval(timerIntervalId);
+            timeRemaining = 180;
+            currentSpeedMultiplier = 1.0;
+            
+            timerIntervalId = setInterval(() => {
+                if (!engineActive) return;
+                timeRemaining--;
+                
+                const minutes = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+                const seconds = (timeRemaining % 60).toString().padStart(2, '0');
+                document.getElementById('timer-display').innerText = `⏱️ 남은 시간: ${minutes}:${seconds}`;
+
+                if (timeRemaining % 30 === 0 && timeRemaining > 0) {
+                    currentSpeedMultiplier += 0.25;
+                    pushNotificationToast("🌊 화학 반응 속도가 빨라집니다!");
+                }
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerIntervalId);
+                    terminateGameSession(true);
+                }
+            }, 1000);
+        }
+
+        function initializeGameSession() {
+            try {
+                if (!audioContextInstance) {
+                    audioContextInstance = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioContextInstance.state === 'suspended') audioContextInstance.resume();
+            } catch(e){}
+
+            triggerAudioSynthesizer('click');
+
+            const nameInput = document.getElementById('stu-name').value.trim();
+            if(!nameInput) {
+                pushNotificationToast("👤 학생 이름을 바르게 적어주세요!");
+                return;
+            }
+
+            bubbleContainerGroup.innerHTML = "";
+            particleContainerGroup.innerHTML = "";
+            activeBubbles = [];
+            activeParticles = [];
+            
+            scoreState = 0;
+            healthState = 5;
+            engineActive = true;
+            lastGenerationTimestamp = performance.now();
+
+            document.getElementById('svg-background-notice').style.display = "none";
+            document.getElementById('start-engine-btn').disabled = true;
+            document.getElementById('answer-input').disabled = false;
+            document.getElementById('submit-btn').disabled = false;
+            document.getElementById('answer-input').value = "";
+            document.getElementById('answer-input').focus();
+
+            refreshScoreBoard();
+            startTimerSystem();
+            pushNotificationToast("🧪 화학 방울 게임을 시작합니다!");
+
+            if (!bgmActive && !audioMuteState) {
+                setTimeout(toggleBackgroundAmbiance, 100);
+            }
+
+            requestAnimationFrame(coreExecutionLoop);
+        }
+
+        function coreExecutionLoop(currentTimestamp) {
+            if (!engineActive) return;
+
+            if (currentTimestamp - lastGenerationTimestamp > intervalConfig) {
+                generateChemicalBubble();
+                lastGenerationTimestamp = currentTimestamp;
+            }
+
+            processBubbleKinematics();
+            processParticleKinematics();
+
+            requestAnimationFrame(coreExecutionLoop);
+        }
+
+        function renderSafeChemicalFormula(svgTextNode, rawSymbol) {
+            svgTextNode.innerHTML = "";
+            let i = 0;
+            
+            while (i < rawSymbol.length) {
+                if (rawSymbol[i] === '_') {
+                    i++;
+                    let subText = "";
+                    while (i < rawSymbol.length && /[0-9]/.test(rawSymbol[i])) {
+                        subText += rawSymbol[i];
+                        i++;
+                    }
+                    const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+                    tspan.setAttribute("class", "subscript-node");
+                    tspan.setAttribute("dy", "10"); 
+                    tspan.textContent = subText;
+                    svgTextNode.appendChild(tspan);
+
+                    const resetSpan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+                    resetSpan.setAttribute("dy", "-10");
+                    svgTextNode.appendChild(resetSpan);
+
+                } else if (rawSymbol[i] === '^') {
+                    i++;
+                    let supText = "";
+                    while (i < rawSymbol.length && /[0-9\+\-]/.test(rawSymbol[i])) {
+                        supText += rawSymbol[i];
+                        i++;
+                    }
+                    const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+                    tspan.setAttribute("class", "superscript-node");
+                    tspan.setAttribute("dy", "-12"); 
+                    tspan.textContent = supText.replace('-', '⁻').replace('+', '⁺');
+                    svgTextNode.appendChild(tspan);
+
+                    const resetSpan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+                    resetSpan.setAttribute("dy", "12");
+                    svgTextNode.appendChild(resetSpan);
+                } else {
+                    const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+                    tspan.textContent = rawSymbol[i];
+                    svgTextNode.appendChild(tspan);
+                    i++;
+                }
+            }
+        }
+
+        function cleanFormulaToken(rawSymbol) {
+            return rawSymbol.replace('_', '').replace('^', '');
+        }
+
+        function generateChemicalBubble() {
+            const scope = document.getElementById('mission-scope').value;
+            let pool = [];
+            if (scope === 'total') {
+                pool = [...CHEMICAL_REGISTRY.elements, ...CHEMICAL_REGISTRY.molecules, ...CHEMICAL_REGISTRY.ions];
+            } else {
+                pool = CHEMICAL_REGISTRY[scope];
+            }
+
+            const item = pool[Math.floor(Math.random() * pool.length)];
+            const radius = 58; 
+            const xPos = Math.random() * (canvasWidth - radius * 2) + radius;
+            const yPos = -radius;
+
+            const colorPalette = [198, 220, 162, 340, 24, 155, 270, 185];
+            const hue = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+
+            const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("r", radius.toString());
+            circle.setAttribute("fill", `hsla(${hue}, 85%, 85%, 0.85)`);
+            circle.setAttribute("stroke", `hsl(${hue}, 60%, 45%)`);
+            circle.setAttribute("stroke-width", "3.5");
+
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("text-anchor", "middle");
+            text.setAttribute("y", "8"); 
+            text.setAttribute("font-size", "28px");
+            text.setAttribute("font-weight", "bold");
+            text.setAttribute("fill", "#1e293b");
+
+            renderSafeChemicalFormula(text, item.symbol);
+
+            g.appendChild(circle);
+            g.appendChild(text);
+            bubbleContainerGroup.appendChild(g);
+
+            activeBubbles.push({
+                dom: g, x: xPos, y: yPos, r: radius,
+                formula: cleanFormulaToken(item.symbol), solutions: item.target,
+                speed: (1.0 + Math.random() * 1.0) * currentSpeedMultiplier,
+                seed: Math.random() * 100
+            });
+        }
+
+        function processBubbleKinematics() {
+            for (let i = activeBubbles.length - 1; i >= 0; i--) {
+                const b = activeBubbles[i];
+                b.y += b.speed;
+                b.seed += 0.025;
+                b.x += Math.sin(b.seed) * 1.3;
+
+                if (b.x - b.r < 0) b.x = b.r;
+                if (b.x + b.r > canvasWidth) b.x = canvasWidth - b.r;
+
+                b.dom.setAttribute("transform", `translate(${b.x}, ${b.y})`);
+
+                if (b.y - b.r > canvasHeight) {
+                    triggerAudioSynthesizer('damage');
+                    healthState--;
+                    refreshScoreBoard();
+                    pushNotificationToast(`💥 방울 탈출! 정답은 [${b.solutions[0]}]`);
+                    
+                    b.dom.remove();
+                    activeBubbles.splice(i, 1);
+
+                    if (healthState <= 0) {
+                        terminateGameSession(false);
+                    }
+                }
+            }
+        }
+
+        function createExplosionEffect(x, y) {
+            const colors = ['#ff4d6d', '#ffb3c1', '#38bdf8', '#c084fc', '#fbbf24'];
+            for (let i = 0; i < 16; i++) {
+                const p = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                const radius = 3 + Math.random() * 4;
+                p.setAttribute("r", radius.toString());
+                p.setAttribute("fill", colors[Math.floor(Math.random() * colors.length)]);
+                particleContainerGroup.appendChild(p);
+
+                const angle = Math.random() * Math.PI * 2;
+                const force = 3 + Math.random() * 5;
+
+                activeParticles.push({
+                    dom: p,
+                    x: x, y: y,
+                    vx: Math.cos(angle) * force,
+                    vy: Math.sin(angle) * force,
+                    alpha: 1.0,
+                    decay: 0.03 + Math.random() * 0.03
+                });
+            }
+        }
+
+        function processParticleKinematics() {
+            for (let i = activeParticles.length - 1; i >= 0; i--) {
+                const p = activeParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.1; 
+                p.alpha -= p.decay;
+
+                if (p.alpha <= 0) {
+                    p.dom.remove();
+                    activeParticles.splice(i, 1);
+                } else {
+                    p.dom.setAttribute("cx", p.x.toString());
+                    p.dom.setAttribute("cy", p.y.toString());
+                    p.dom.setAttribute("opacity", p.alpha.toString());
+                }
+            }
+        }
+
+        function evaluatingUserAnswer() {
+            if (!engineActive) return;
+            const inputField = document.getElementById('answer-input');
+            const userRawGuess = inputField.value.trim().replace(/\s+/g, '');
+            if (!userRawGuess) return;
+
+            let matchIndex = -1;
+            for (let i = 0; i < activeBubbles.length; i++) {
+                if (activeBubbles[i].solutions.includes(userRawGuess)) {
+                    matchIndex = i;
+                    break;
+                }
+            }
+
+            if (matchIndex !== -1) {
+                triggerAudioSynthesizer('pop');
+                const matched = activeBubbles[matchIndex];
+                createExplosionEffect(matched.x, matched.y);
+                
+                scoreState += 10;
+                refreshScoreBoard();
+                pushNotificationToast(`🎯 정답! +10점 (${matched.solutions[0]})`);
+                
+                matched.dom.remove();
+                activeBubbles.splice(matchIndex, 1);
+            } else {
+                pushNotificationToast("❌ 틀렸습니다! 다시 생각해보세요.");
+            }
+
+            inputField.value = "";
+            inputField.focus();
+        }
+
+        function refreshScoreBoard() {
+            document.getElementById('score-display').innerText = `✨ 점수: ${scoreState}`;
+            document.getElementById('health-display').innerText = `생명: ` + `❤️ `.repeat(Math.max(0, healthState)) + `💔 `.repeat(Math.max(0, 5 - healthState));
+        }
+
+        // 🛠️ 새로 정상 복구 및 구현 완료된 세션 종료 함수
+        function terminateGameSession(isTimeOut) {
+            engineActive = false;
+            clearInterval(timerIntervalId);
+            triggerAudioSynthesizer('fanfare');
+
+            if (bgmActive) toggleBackgroundAmbiance();
+
+            document.getElementById('answer-input').disabled = true;
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('start-engine-btn').disabled = false;
+
+            const grade = document.getElementById('stu-grade').value;
+            const sClass = document.getElementById('stu-class').value;
+            const sNumber = document.getElementById('stu-number').value;
+            const name = document.getElementById('stu-name').value.trim();
+            const recordIdentifier = `${grade}학년 ${sClass}반 ${sNumber}번 ${name}`;
+
+            // 명예의 전당 점수 등록 및 갱신
+            leaderboardMemory.push({ info: recordIdentifier, score: scoreState });
+            leaderboardMemory.sort((a, b) => b.score - a.score);
+            leaderboardMemory = leaderboardMemory.slice(0, 5);
+
+            const rankContainer = document.getElementById('rank-insertion-point');
+            rankContainer.innerHTML = "";
+            leaderboardMemory.forEach((entry, index) => {
+                const item = document.createElement('div');
+                item.className = "rank-item";
+                item.innerHTML = `<span>🥇 ${index + 1}등. ${entry.info}</span> <strong>${entry.score}점</strong>`;
+                rankContainer.appendChild(item);
+            });
+
+            // 결과 안내용 모달 팝업 열기
+            const modalTitle = document.getElementById('modal-header-title');
+            const modalBody = document.getElementById('modal-core-body');
+            
+            modalTitle.innerText = isTimeOut ? "⏱️ 실험 시간 종료!" : "💥 하트 전멸! 실험 종료";
+            modalBody.innerHTML = `🎉 <strong>${name}</strong> 학생 고생했어요!<br><br>🏁 최종 기록: <strong>${scoreState}점</strong><br>종합 순위가 갱신되었습니다.`;
+            
+            document.getElementById('global-status-modal').classList.add('active');
+        }
+
+        function dismissStatusModal() {
+            document.getElementById('global-status-modal').classList.remove('active');
+            document.getElementById('svg-background-notice').style.display = "block";
+            document.getElementById('svg-background-notice').textContent = "실험이 종료되었습니다. 다시 시작하려면 버튼을 누르세요!";
+        }
+    </script>
+
+</body></html>
